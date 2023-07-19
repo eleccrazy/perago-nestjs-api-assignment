@@ -1,0 +1,23 @@
+version: '3.9'
+services:
+  db:
+    image: postgres
+    restart: always
+    container_name: perago-assignment
+    ports:
+      - '5435:5432'
+    environment:
+      POSTGRES_USER: perago-user
+      POSTGRES_PASSWORD: perago-passwd
+      POSTGRES_DB: orga_structure
+
+  db_test:
+    image: postgres
+    restart: always
+    container_name: perago-assignment-test
+    ports:
+      - '5436:5432'
+    environment:
+      POSTGRES_USER: perago-test-user
+      POSTGRES_PASSWORD: perago-test-passwd
+      POSTGRES_DB: orga_structure_test
