@@ -46,6 +46,12 @@ export class UpdatePositonsHandler
         if (typeof name !== 'string') {
           throw new BadRequestException('name must be a string');
         }
+        // Check if the length of the name is atleast 2 characters
+        if (name.length < 2) {
+          throw new BadRequestException(
+            'name must be atleast 2 characters long',
+          );
+        }
         // Check if the name is already taken by another position
         const positionExists = await this.positonRepository.findOneBy({
           name: name,
@@ -63,6 +69,12 @@ export class UpdatePositonsHandler
       if (description) {
         if (typeof description !== 'string') {
           throw new BadRequestException('description must be a string');
+        }
+        // check if the length of the description is atleast 6 characters
+        if (description.length < 6) {
+          throw new BadRequestException(
+            'description must be atleast 6 characters long',
+          );
         }
         // Check if the description is the same as the current description of the position. If it is the same, we won't update the description.
         if (description !== positionToUpdate.description) {
