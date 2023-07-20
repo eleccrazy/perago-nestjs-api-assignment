@@ -34,6 +34,7 @@ $ npm run start # or yarn start
 $ npm run start:dev # or yarn start:dev
 
 # production mode
+$ npm run build   # or yarn build
 $ npm run start:prod # or yarn start:prod
 ```
 
