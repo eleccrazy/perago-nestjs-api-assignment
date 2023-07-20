@@ -103,22 +103,40 @@ export class UpdatePositonsHandler
         if (!parent) {
           throw new BadRequestException('Parent Position Not Found!');
         }
-        // Get all children positions of the position
-        const childrenPositions = await this.positonRepository.find({
-          where: {
-            parent: {
-              id: id,
+
+        // Check if the parent position is the position above the position being updated in the position tree. If it is not, we won't update the parent position.
+        const findAllChildren = async (
+          id: string,
+        ): Promise<PositionsEntity[]> => {
+          // Get all children positions of the position with the given id
+          const childPositions = await this.positonRepository.find({
+            where: {
+              parent: {
+                id: id,
+              },
             },
-          },
-        });
-        // Check if the parent positon is the children of the position
-        const isChilderPosition = childrenPositions.filter(
-          (pos) => pos.id === parentId,
+          });
+          // Get the children positions of each child position recursively
+          const descendantPositions: PositionsEntity[] = [];
+          for (const childPosition of childPositions) {
+            const childDescendantPositions = await findAllChildren(
+              childPosition.id,
+            );
+            // Push the children positions of each child position to the descendantPositions array
+            descendantPositions.push(...childDescendantPositions);
+          }
+          // Return the children positions and the descendant positions
+          return [...childPositions, ...descendantPositions];
+        };
+        const result = await findAllChildren(positionToUpdate.id);
+        // Filter the descendant positions to check if the parent position is the descendant of the position being updated
+        const isParentPosition = result.some(
+          (position) => position.id === parentId,
         );
-        // If the position with parentId is the children of the position being updated, send an bad request message.
-        if (isChilderPosition.length > 0) {
+        // If the parent position is the descendant of the position being updated, we will send a bad request response to the client
+        if (isParentPosition) {
           throw new BadRequestException(
-            "Child position of the positoin being update can't be the parent postion for it",
+            'The parent position can not be the descendant of the position being updated',
           );
         }
         // If the parent position is the same as the current parent position of the position being updated, we won't update the parent position.

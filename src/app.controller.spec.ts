@@ -15,9 +15,9 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Perago Organization Structure API. An assignment by Gizachew Bayness Kassa"', () => {
+    it('should return "Perago Organization Structure API. An assignment by Gizachew Bayness"', () => {
       expect(appController.getHello()).toBe(
-        'Perago Organization Structure API. An assignment by Gizachew Bayness Kassa',
+        'Perago Organization Structure API. An assignment by Gizachew Bayness',
       );
     });
   });
