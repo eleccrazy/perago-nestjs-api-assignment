@@ -46,6 +46,13 @@ export class UpdatePositonsHandler
         if (typeof name !== 'string') {
           throw new BadRequestException('name must be a string');
         }
+        // Check if the name is already taken by another position
+        const positionExists = await this.positonRepository.findOneBy({
+          name: name,
+        });
+        if (positionExists && positionExists.id !== positionToUpdate.id) {
+          throw new BadRequestException('Position already exists');
+        }
         // Check if the name is the same as the current name of the position. If it is the same, we won't update the name.
         if (name !== positionToUpdate.name) {
           positionToUpdate.name = name;

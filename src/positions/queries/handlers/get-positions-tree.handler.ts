@@ -42,6 +42,6 @@ export class GetPositionsTreeHandler
     // Build the position tree for each root position
     const positionTrees = rootPositions.map(buildPositionTree);
 
-    return positionTrees;
+    return positionTrees.length === 1 ? positionTrees[0] : positionTrees;
   }
 }

@@ -19,21 +19,27 @@ export class createPositionHandler
   ) {}
   async execute(command: CreatePositionsCommand): Promise<{ id: string }> {
     try {
-      // Check if command contains all the required parameters
-      if (!command.name || !command.description) {
-        throw new BadRequestException('Missing required parameters');
+      // Check if the length of name is at least 2 characters
+      if (command.name.length < 2) {
+        throw new BadRequestException('name must be at least 2 characters');
       }
-      // Check the type of name
-      if (typeof command.name !== 'string') {
-        throw new BadRequestException('name must be a string');
-      }
-      // Check if the type of description
-      if (typeof command.description !== 'string') {
-        throw new BadRequestException('description must be a string');
+      // Check if the length of description is at least 6 characters
+      if (command.description.length < 6) {
+        throw new BadRequestException(
+          'description must be at least 6 characters',
+        );
       }
       const parentId = command.parentId;
       // Check if this is the first position
       const isFirstPosition = (await this.positionsRepository.count()) === 0;
+      // Check if the position with the same name already exists
+      const positionExists = await this.positionsRepository.findOneBy({
+        name: command.name,
+      });
+      // Throw an error if the position already exists
+      if (positionExists) {
+        throw new BadRequestException('Position already exists');
+      }
       // Find the parent position if the parent id is provided
       const parent = parentId
         ? await this.positionsRepository.findOneBy({ id: parentId })
