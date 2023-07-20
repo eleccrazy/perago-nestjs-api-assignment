@@ -103,7 +103,7 @@ http://localhost:3000/api/docs
 - The `name`, `description`, and `parentId` can be updated, and they must follow the same rules as creating a new position
 - The `name` field must be unique, i.e, no two positions can have the same name
 - While upating the `parentId`, the new `parentId` must not be the same as the `id` of the position being updated. The position cannot be its own parent.
-- While upating the `parentId`, the new `parentId` must not be the same as the `id` of any of its child positions
+- While upating the `parentId`, the new `parentId` must not be the same as the `id` of any of its child positions and their descendants. If the descendant of the position being updated is the new `parentId`, the tree structure will be broken, and the hierarchy may become circular.
 
 #### Rules for deleting a position /api/positions/:id
 
