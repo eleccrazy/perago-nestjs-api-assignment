@@ -478,5 +478,37 @@ describe('PositionsController', () => {
   // Test suite for the deletePosition method
   describe('deletePosition', () => {
     // Test if the deletePosition method is defined
+    it('should be defined', () => {
+      expect(controller.deletePosition).toBeDefined();
+    });
+    // Test if the deletePosition method is called
+    it('should be called', async () => {
+      const positionId = uuidv4();
+      const command = new DeletePositionsCommand(positionId);
+      jest.spyOn(commandBus, 'execute').mockResolvedValueOnce(null);
+      await controller.deletePosition(positionId);
+      expect(commandBus.execute).toHaveBeenCalledWith(command);
+    });
+
+    // Test if the deletePosition method returns the success message if the position is deleted
+    it('should return the success message if the position is deleted', async () => {
+      const positionId = uuidv4();
+      const successMessage = 'Position deleted successfully!';
+      jest.spyOn(commandBus, 'execute').mockResolvedValueOnce(successMessage);
+      const result = await controller.deletePosition(positionId);
+      expect(result).toEqual(successMessage);
+    });
+
+    // Test if the deletePosition method returns a NotFoundException if the position with the specified id does not exist
+    it('should return a NotFoundException if the position with the specified id does not exist', async () => {
+      const positionId = '123';
+      const errorMessage = 'Position Not Found!';
+      jest
+        .spyOn(commandBus, 'execute')
+        .mockRejectedValueOnce(new NotFoundException(errorMessage));
+      await expect(controller.deletePosition(positionId)).rejects.toThrowError(
+        new NotFoundException(errorMessage),
+      );
+    });
   });
 });
