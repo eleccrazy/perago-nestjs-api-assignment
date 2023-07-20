@@ -5,6 +5,9 @@ import { PositionsModule } from './positions/positions.module';
 import { PositionsEntity } from './entities/positions.entity';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { config } from 'dotenv';
+
+config(); // load environment variables from .env file
 
 @Module({
   imports: [
